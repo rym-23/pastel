@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Para ti 💖</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. PANTALLA INICIAL: terminal a pantalla completa -->
+  <section id="intro">
+    <pre id="term"><span id="txt"></span><span id="faces"></span><span class="cursor"></span></pre>
+  </section>
+
+  <!-- 2. ESCENA 3D (Three.js se dibuja en #stage) -->
+  <div id="stage"></div>
+
+  <!-- MODAL: carta romántica -->
+  <div class="modal" id="letter">
+    <div class="sheet">
+      <h2 id="letterTitle"></h2>
+      <img id="letterImg" class="letter-img" alt="" hidden>
+      <div id="letterBody" class="letter"></div>
+      <div class="row"><button class="btn" data-close>Cerrar</button></div>
+    </div>
+  </div>
+
+  <!-- MODAL: ver una foto en grande -->
+  <div class="modal" id="photo">
+    <div class="sheet photo-sheet">
+      <img id="photoImg" alt="Foto">
+      <p id="photoCap"></p>
+      <div class="row"><button class="btn" data-close>Cerrar</button></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
