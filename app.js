@@ -58,6 +58,7 @@ async function typeTerminal() {
 function showAll(lines) {
   $('#txt').textContent = lines.map(l => l.t).join('\n') + '\n';
   startFaces();
+  setTimeout(() => gsap.to(lit, { v: 1, duration: 1.4, ease: 'power2.out' }), 1000);
 }
 
 // Caras animadas al final de la terminal: ʅ(@_@)ʃ ʅ(@_@)ʃ ʅ(@_@)ʃ
@@ -167,6 +168,7 @@ const CANDLE_SCALE = .6;
 const CANDLE_SINK = .4;    // cuánto se hunden las velas en la torta (positivo = más abajo)
 const CANDLE_SPOTS = [[-.45, .25], [0, -.1], [.45, .2]];
 const flames = [], flameLights = [];
+const lit = { v: 0 };   // 0 = velas apagadas, 1 = encendidas
 const downRay = new THREE.Raycaster();
 
 // Altura real de la superficie de la torta en (x, z), medida con un rayo que cae desde arriba
@@ -341,6 +343,33 @@ envGlow.scale.set(ENV_W * 1.8, ENV_H * 1.8, 1);
 envGlow.position.set(ENV_X, .15, ENV_Z);
 scene.add(envGlow);
 
+/* Carta de papel delante del sobre (clic = leer) */
+const PAPER_X = .2, PAPER_Z = 5.9, PAPER_W = 2.2, PAPER_H = 2.9;
+const paperCanvas = document.createElement('canvas');
+paperCanvas.width = 704; paperCanvas.height = 928;
+const paperTex = new THREE.CanvasTexture(paperCanvas);
+paperTex.encoding = THREE.sRGBEncoding;
+function drawPaper() {
+  const g = paperCanvas.getContext('2d'), W = paperCanvas.width, H = paperCanvas.height;
+  g.fillStyle = '#fffdf8'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = '#f0bcd6'; g.lineWidth = 6; g.strokeRect(30, 30, W - 60, H - 60);
+  g.textAlign = 'center'; g.fillStyle = '#d4357f'; g.font = `bold 60px ${FONT}`;
+  g.fillText('Mi amor:', W / 2, 130);
+  g.textAlign = 'left'; g.fillStyle = '#4a2350'; g.font = `32px ${FONT}`;
+  wrap(g, cfg.letter.replace(/^Mi amor:\s*/, '').slice(0, 520) + '…', 80, 220, W - 160, 48);
+  paperTex.needsUpdate = true;
+}
+const paper = new THREE.Mesh(
+  new THREE.PlaneGeometry(PAPER_W, PAPER_H),
+  new THREE.MeshStandardMaterial({ map: paperTex, roughness: .9 })
+);
+paper.rotation.order = 'YXZ';
+paper.rotation.set(-Math.PI / 2, .12, 0);
+paper.position.set(PAPER_X, .075, PAPER_Z);
+paper.userData.onClick = () => openLetter();
+scene.add(paper);
+clickables.push(paper);
+
 /* ---------- Corazones flotantes ---------- */
 const heartTex = canvasTex(128, 128, (g) => {
   g.fillStyle = '#fff';
@@ -434,6 +463,7 @@ function placeholder(i) {
 }
 function applyConfig() {
   drawEnvelope();
+  drawPaper();
   polaroids.forEach((mat, i) => {
     const src = cfg.photos.length ? cfg.photos[i % cfg.photos.length] : null;
     mat.map = src ? loader.load(src) : placeholder(i);
@@ -454,12 +484,12 @@ function tick(now) {
   updateCam();
 
   flames.forEach((f, i) => {
-    f.scale.y = 2 + Math.sin(t * 11 + i) * .15;
-    f.scale.x = .9 + Math.sin(t * 8 + i * 2) * .08;
+    f.scale.y = (2 + Math.sin(t * 11 + i) * .15) * lit.v + .001;
+    f.scale.x = (.9 + Math.sin(t * 8 + i * 2) * .08) * lit.v + .001;
   });
-  flameLights.forEach((l, i) => { l.intensity = .8 + Math.sin(t * 13 + i * 1.7) * .2 + Math.sin(t * 5 + i) * .1; });
-  glows.forEach((g, i) => { g.material.opacity = .75 + Math.sin(t * 9 + i) * .2; });
-  candleLight.intensity = 1.5 + Math.sin(t * 10) * .15;
+  flameLights.forEach((l, i) => { l.intensity = (.8 + Math.sin(t * 13 + i * 1.7) * .2 + Math.sin(t * 5 + i) * .1) * lit.v; });
+  glows.forEach((g, i) => { g.material.opacity = (.75 + Math.sin(t * 9 + i) * .2) * lit.v; });
+  candleLight.intensity = (1.5 + Math.sin(t * 10) * .15) * lit.v;
   hearts.forEach(h => {
     h.s.position.y += h.v * dt;
     h.s.position.x += Math.sin(t + h.o) * .3 * dt;
@@ -552,6 +582,7 @@ addEventListener('keydown', e => { if (e.key === 'Escape') $$('.modal.open').for
 
 let letterTimer = null;
 function openLetter() {
+  gsap.to('#hint', { opacity: 0, duration: .3 });
   $('#letterTitle').textContent = `Para ${cfg.name}`;
   const img = $('#letterImg');
   img.src = cfg.letterImage || '';
@@ -590,7 +621,8 @@ function start() {
     .to('#term', { scale: .4, opacity: 0, filter: 'blur(8px)', duration: .9, ease: 'power2.in' })
     .to('#intro', { opacity: 0, duration: 1, onComplete: () => { $('#intro').style.display = 'none'; } }, '-=.2')
     .to(orbit, { r: 22, phi: 1.08, duration: 3.2, ease: 'power3.out' }, '-=.9')
-    ;
+    .to('#hint', { opacity: 1, duration: .8 }, '-=1');
+  gsap.to('#hint', { y: -8, repeat: -1, yoyo: true, duration: 1.4, ease: 'sine.inOut' });
 }
 
 /* ---------- Arranque ---------- */

@@ -71,6 +71,14 @@ html, body {
 /* ---------- (sin botones en pantalla) ---------- */
 
 
+/* ---------- Mensaje para abrir la carta ---------- */
+#hint {
+  position: fixed; left: 0; right: 0; bottom: 7vh; z-index: 5;
+  text-align: center; pointer-events: none; opacity: 0;
+  font-family: 'Seramonde', Georgia, serif; font-size: clamp(18px, 3vw, 30px);
+  color: #fff; text-shadow: 0 0 12px rgba(255, 111, 174, .9), 0 2px 6px rgba(0, 0, 0, .6);
+}
+
 /* ---------- Modales ---------- */
 .modal {
   position: fixed; inset: 0; z-index: 20;
