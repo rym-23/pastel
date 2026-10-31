@@ -330,6 +330,17 @@ envTop.userData.onClick = envBase.userData.onClick = () => openLetter();
 scene.add(envBase, envTop);
 clickables.push(envTop, envBase);
 
+// Brillo que pulsa para indicar que el sobre se puede tocar
+const envMat = envTop.material;
+envMat.emissive = new THREE.Color(0xff6fae);
+envMat.emissiveIntensity = .25;
+const envGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+  map: glowTex, color: 0xff8fc7, transparent: true, opacity: .4, depthWrite: false, blending: THREE.AdditiveBlending
+}));
+envGlow.scale.set(ENV_W * 1.8, ENV_H * 1.8, 1);
+envGlow.position.set(ENV_X, .15, ENV_Z);
+scene.add(envGlow);
+
 /* ---------- Corazones flotantes ---------- */
 const heartTex = canvasTex(128, 128, (g) => {
   g.fillStyle = '#fff';
@@ -381,8 +392,13 @@ $$('[data-cam]').forEach(b => b.addEventListener('click', () => {
 /* ---------- Arrastrar para girar, rueda para acercar, clic para interactuar ---------- */
 let drag = null, moved = 0, idle = 0;
 cvs.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY }; moved = 0; idle = 0; gsap.killTweensOf(orbit); });
+function overClickable(e) {
+  const m = new THREE.Vector2((e.clientX / innerWidth) * 2 - 1, -(e.clientY / innerHeight) * 2 + 1);
+  ray.setFromCamera(m, camera);
+  return ray.intersectObjects(clickables, false).length > 0;
+}
 addEventListener('pointermove', e => {
-  if (!drag) return;
+  if (!drag) { cvs.style.cursor = overClickable(e) ? 'pointer' : 'grab'; return; }
   const dx = e.clientX - drag.x, dy = e.clientY - drag.y;
   drag = { x: e.clientX, y: e.clientY };
   moved += Math.abs(dx) + Math.abs(dy);
@@ -450,6 +466,9 @@ function tick(now) {
     if (h.s.position.y > 14) { h.s.position.y = -1; h.s.position.x = rnd(-14, 14); }
   });
 
+  const pulse = Math.sin(t * 2.5);
+  envMat.emissiveIntensity = .25 + pulse * .15;
+  envGlow.material.opacity = .35 + pulse * .2;
   renderer.render(scene, camera);
   requestAnimationFrame(tick);
 }

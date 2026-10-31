@@ -66,7 +66,7 @@ En `app.js`:
 
 - **Arrastrar** sobre la escena: gira la cámara.
 - **Rueda del ratón** o pellizco: acerca y aleja.
-- **Tocar el sobre**: abre la carta.
+- **Tocar el sobre** (brilla y se resalta al pasar el cursor): abre la carta.
 - **Tocar una foto**: la muestra en grande.
 - **Enter** o tocar la pantalla inicial: continúa. **Esc** cierra las ventanas.
 
