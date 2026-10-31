@@ -330,22 +330,6 @@ envTop.userData.onClick = envBase.userData.onClick = () => openLetter();
 scene.add(envBase, envTop);
 clickables.push(envTop, envBase);
 
-/* ---------- Luces decorativas colgando ---------- */
-const bulbs = [];
-const stringPts = [];
-for (let i = 0; i <= 60; i++) {
-  const x = -15 + i * .5;
-  stringPts.push(new THREE.Vector3(x, 7.5 - Math.abs(x) * .12 + Math.sin(i * .4) * .2, -10));
-}
-scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(stringPts), new THREE.LineBasicMaterial({ color: 0x3a2350 })));
-stringPts.forEach((p, i) => {
-  if (i % 2) return;
-  const b = new THREE.Mesh(new THREE.SphereGeometry(.1, 8, 8), new THREE.MeshBasicMaterial({ color: [0xffd1a1, 0xff8fc7, 0xc9a0ff][i % 3] }));
-  b.position.copy(p);
-  scene.add(b);
-  bulbs.push(b);
-});
-
 /* ---------- Corazones flotantes ---------- */
 const heartTex = canvasTex(128, 128, (g) => {
   g.fillStyle = '#fff';
@@ -460,7 +444,6 @@ function tick(now) {
   flameLights.forEach((l, i) => { l.intensity = .8 + Math.sin(t * 13 + i * 1.7) * .2 + Math.sin(t * 5 + i) * .1; });
   glows.forEach((g, i) => { g.material.opacity = .75 + Math.sin(t * 9 + i) * .2; });
   candleLight.intensity = 1.5 + Math.sin(t * 10) * .15;
-  bulbs.forEach((b, i) => b.scale.setScalar(.9 + Math.sin(t * 3 + i) * .25));
   hearts.forEach(h => {
     h.s.position.y += h.v * dt;
     h.s.position.x += Math.sin(t + h.o) * .3 * dt;
