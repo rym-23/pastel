@@ -6,7 +6,6 @@ const DEFAULTS = {
   name: 'Ameri',
   // Imagen que aparece al abrir la carta (ruta dentro del proyecto; vacío = sin imagen)
   letterImage: 'fotos/carta.png',
-  cardText: 'Este fondo es el lugar donde nos conocimos 💗',
   letter: "Mi amor:\nPrimero que todo, feliz cumpleaños, preciosa. ❤️ Espero que hoy tengas un día muy bonito, porque de verdad te mereces lo mejor del mundo.\nQuiero aprovechar este día para decirte algo que quizás no te digo tantas veces como debería: te amo muchísimo. No importa la distancia que haya entre nosotros, quiero que sepas que siempre voy a estar para ti. En los días buenos, en los días difíciles, cuando necesites hablar, cuando estés triste o simplemente cuando quieras compañía. Quiero que tengas presente que puedes contar conmigo, porque no pienso dejar de apoyarte ni de estar a tu lado por más lejos que estemos.\nSé que a veces casi no hacemos planes juntos, como jugar o hacer otras cositas, y que no siempre podemos compartir tanto tiempo como nos gustaría. Pero eso no significa que no me guste estar contigo o que te quiera menos. Al contrario, valoro mucho que, incluso con esas cosas, sé que siempre vas a estar para mí cuando te necesite. Y créeme que eso es algo que amo de ti.\nGracias por hacerme sentir querido, por estar ahí y por ser esa personita tan especial en mi vida. No necesito que hagamos grandes cosas todo el tiempo para saber lo mucho que significas para mí. A veces, simplemente saber que estás ahí es suficiente para hacerme feliz.\nQuiero seguir compartiendo momentos contigo, creando recuerdos y acompañándote en todo lo que venga. Quiero verte cumplir tus sueños, verte feliz y recordarte siempre lo increíble que eres.\nTe amo, Ameri, y quiero que nunca dudes de eso. La distancia no va a cambiar lo que siento por ti, y mientras me lo permitas, siempre voy a estar para ti.\nFeliz cumpleaños, mi niña hermosa. Espero poder hacerte tan feliz como tú me haces a mí.",
   // Rutas de tus fotos dentro del proyecto. Se muestran en los marcos Polaroid.
   photos: ['fotos/1.jpg', 'fotos/2.jpg', 'fotos/3.jpg', 'fotos/4.jpg'],
@@ -296,34 +295,40 @@ const polaroids = [];
   polaroids.push(mat);
 });
 
-/* ---------- Carta: papel acostado sobre la mesa (clic = leer) ---------- */
+/* ---------- Sobre sobre la mesa: portada = imagen de la carta (clic = leer) ---------- */
 const FONT = 'Seramonde, Georgia, serif';
-function drawCard() {
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 640;
-  const g = c.getContext('2d');
-  g.fillStyle = '#fff7fb'; g.fillRect(0, 0, 512, 640);
-  g.strokeStyle = '#e7659f'; g.lineWidth = 12; g.strokeRect(22, 22, 468, 596);
-  g.textAlign = 'center';
-  g.fillStyle = '#d4357f'; g.font = `bold 58px ${FONT}`; g.fillText('FELIZ DÍA', 256, 120);
-  g.font = `44px ${FONT}`; g.fillStyle = '#7a3d9c'; g.fillText(cfg.name, 256, 185);
-  g.font = '120px serif'; g.fillText('🧸', 256, 340);
-  g.font = `28px ${FONT}`; g.fillStyle = '#4a2350';
-  wrap(g, cfg.cardText, 256, 430, 400, 40);
-  g.font = `italic 26px ${FONT}`; g.fillStyle = '#b05a90';
-  g.fillText('toca para leer mi carta', 256, 580);
-  return new THREE.CanvasTexture(c);
+const ENV_W = 3.2, ENV_H = 2.2, ENV_X = 3.2, ENV_Z = 3.4;
+const envCanvas = document.createElement('canvas');
+envCanvas.width = 1024; envCanvas.height = 704;
+const envTex = new THREE.CanvasTexture(envCanvas);
+envTex.encoding = THREE.sRGBEncoding;
+
+function drawEnvelope() {
+  const g = envCanvas.getContext('2d'), W = envCanvas.width, H = envCanvas.height;
+  g.fillStyle = '#fff0f8'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = '#e7659f'; g.lineWidth = 14; g.strokeRect(20, 20, W - 40, H - 40);
+  g.beginPath(); g.moveTo(20, 20); g.lineTo(W / 2, H * .5); g.lineTo(W - 20, 20); g.stroke();   // solapa del sobre
+  g.textAlign = 'center'; g.fillStyle = '#d4357f'; g.font = `bold 70px ${FONT}`;
+  g.fillText(`Para ${cfg.name}`, W / 2, H - 60);
+  envTex.needsUpdate = true;
+  if (cfg.letterImage) {
+    const im = new Image();
+    im.onload = () => { g.drawImage(im, W / 2 - 180, H * .5 - 170, 360, 360); envTex.needsUpdate = true; };
+    im.src = cfg.letterImage;
+  }
 }
-const card = new THREE.Mesh(
-  new THREE.PlaneGeometry(3.0, 3.8),
-  new THREE.MeshStandardMaterial({ roughness: .8, side: THREE.DoubleSide })
+
+const envBase = new THREE.Mesh(new THREE.BoxGeometry(ENV_W, .06, ENV_H), std(0xffeaf4));
+envBase.position.set(ENV_X, .03, ENV_Z);
+const envTop = new THREE.Mesh(
+  new THREE.PlaneGeometry(ENV_W, ENV_H),
+  new THREE.MeshStandardMaterial({ map: envTex, roughness: .7 })
 );
-card.rotation.order = 'YXZ';                 // primero giro sobre la mesa, luego acostada
-card.rotation.set(-Math.PI / 2, .3, 0);
-card.position.set(3.1, .04, 3.6);
-card.userData.onClick = () => openLetter();
-scene.add(card);
-clickables.push(card);
+envTop.rotation.x = -Math.PI / 2;           // acostado sobre la mesa, con la portada hacia arriba
+envTop.position.set(ENV_X, .062, ENV_Z);
+envTop.userData.onClick = envBase.userData.onClick = () => openLetter();
+scene.add(envBase, envTop);
+clickables.push(envTop, envBase);
 
 /* ---------- Luces decorativas colgando ---------- */
 const bulbs = [];
@@ -428,8 +433,7 @@ function placeholder(i) {
   });
 }
 function applyConfig() {
-  card.material.map = drawCard();
-  card.material.needsUpdate = true;
+  drawEnvelope();
   polaroids.forEach((mat, i) => {
     const src = cfg.photos.length ? cfg.photos[i % cfg.photos.length] : null;
     mat.map = src ? loader.load(src) : placeholder(i);

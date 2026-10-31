@@ -45,9 +45,8 @@ Si cambias un archivo, mantén su nombre o actualiza las reglas `@font-face` en 
 Todo se configura en el objeto `DEFAULTS` al inicio de `app.js`:
 
 - `name`: el nombre de tu novia. Aparece en la terminal y en la carta.
-- `cardText`: el texto de la carta sobre la mesa.
 - `letter`: el texto de la carta que se abre al tocarla.
-- `letterImage`: imagen que aparece arriba de la carta (por defecto `fotos/carta.png`). Déjalo vacío para no mostrarla.
+- `letterImage`: imagen de la portada del sobre que está sobre la mesa y también aparece arriba de la carta (por defecto `fotos/carta.png`). Déjalo vacío para no mostrarla.
 - `photos`: las rutas de las fotos. Se muestran en los 4 marcos Polaroid; al tocar una se ve en grande.
 - `music`: ruta de una canción propia, por ejemplo `'musica/cancion.mp3'`. Déjalo vacío para la melodía generada.
 
@@ -66,7 +65,7 @@ En `app.js`:
 
 - **Arrastrar** sobre la escena: gira la cámara.
 - **Rueda del ratón** o pellizco: acerca y aleja.
-- **Tocar la carta**: la abre.
+- **Tocar el sobre**: abre la carta.
 - **Tocar una foto**: la muestra en grande.
 - **Enter** o tocar la pantalla inicial: continúa. **Esc** cierra las ventanas.
 
