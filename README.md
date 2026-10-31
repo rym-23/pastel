@@ -11,7 +11,8 @@ Una experiencia romántica en una sola página: una consola que escribe un mensa
 | `app.js` | Configuración (`DEFAULTS`) y lógica: terminal, escena 3D, cámara, música y carta |
 | `fondo/panoramica.png` | Panorámica que se usa como esfera de fondo |
 | `fuentes/` | Fuentes: `Seramonde.otf` (textos) y `Courier_New.otf` (terminal inicial) |
-| `fotos/carta.png` | Imagen que aparece arriba de la carta |
+| `fotos/carta.png` | Imagen de la portada del sobre y de la carta |
+| `musica/cancion.mp3` | Canción de fondo |
 | `fotos/1.jpg` a `fotos/4.jpg` | Las cuatro fotos de los marcos Polaroid |
 | `modelos/Cake.glb` | Modelo 3D de la torta; sus texturas están en `modelos/texturas/` |
 | `modelos/mesa.glb` | Modelo de la mesa (rosa) |

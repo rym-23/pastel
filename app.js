@@ -9,8 +9,8 @@ const DEFAULTS = {
   letter: "Mi amor:\nPrimero que todo, feliz cumpleaños, preciosa. ❤️ Espero que hoy tengas un día muy bonito, porque de verdad te mereces lo mejor del mundo.\nQuiero aprovechar este día para decirte algo que quizás no te digo tantas veces como debería: te amo muchísimo. No importa la distancia que haya entre nosotros, quiero que sepas que siempre voy a estar para ti. En los días buenos, en los días difíciles, cuando necesites hablar, cuando estés triste o simplemente cuando quieras compañía. Quiero que tengas presente que puedes contar conmigo, porque no pienso dejar de apoyarte ni de estar a tu lado por más lejos que estemos.\nSé que a veces casi no hacemos planes juntos, como jugar o hacer otras cositas, y que no siempre podemos compartir tanto tiempo como nos gustaría. Pero eso no significa que no me guste estar contigo o que te quiera menos. Al contrario, valoro mucho que, incluso con esas cosas, sé que siempre vas a estar para mí cuando te necesite. Y créeme que eso es algo que amo de ti.\nGracias por hacerme sentir querido, por estar ahí y por ser esa personita tan especial en mi vida. No necesito que hagamos grandes cosas todo el tiempo para saber lo mucho que significas para mí. A veces, simplemente saber que estás ahí es suficiente para hacerme feliz.\nQuiero seguir compartiendo momentos contigo, creando recuerdos y acompañándote en todo lo que venga. Quiero verte cumplir tus sueños, verte feliz y recordarte siempre lo increíble que eres.\nTe amo, Ameri, y quiero que nunca dudes de eso. La distancia no va a cambiar lo que siento por ti, y mientras me lo permitas, siempre voy a estar para ti.\nFeliz cumpleaños, mi niña hermosa. Espero poder hacerte tan feliz como tú me haces a mí.",
   // Rutas de tus fotos dentro del proyecto. Se muestran en los marcos Polaroid.
   photos: ['fotos/1.jpg', 'fotos/2.jpg', 'fotos/3.jpg', 'fotos/4.jpg'],
-  // Ruta de una canción propia, p. ej. 'musica/cancion.mp3'. Déjalo vacío para la melodía generada.
-  music: ''
+  // Ruta de la canción de fondo. Déjalo vacío para la melodía generada.
+  music: 'musica/cancion.mp3'
 };
 
 /* ---------- Utilidades ---------- */
